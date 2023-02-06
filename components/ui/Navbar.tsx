@@ -1,5 +1,14 @@
 import NextLink from 'next/link';
-import { AppBar, Box, Link, Toolbar, Typography, Button, IconButton, Badge } from '@mui/material';
+import {
+  AppBar,
+  Box,
+  Link,
+  Toolbar,
+  Typography,
+  Button,
+  IconButton,
+  Badge,
+} from '@mui/material';
 import { SearchOutlined, ShoppingCartOutlined } from '@mui/icons-material';
 
 export const Navbar = () => {
@@ -12,8 +21,6 @@ export const Navbar = () => {
             <Typography sx={{ ml: 0.5 }}>Shop</Typography>
           </Link>
         </NextLink>
-
-        {/* todo flex */}
 
         <Box flex={1} />
 

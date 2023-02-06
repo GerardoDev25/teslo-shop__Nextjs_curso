@@ -1,5 +1,6 @@
-import Head from 'next/head';
 import { FC, ReactNode } from 'react';
+import Head from 'next/head';
+
 import { Navbar } from '../ui';
 
 interface Props {
@@ -23,12 +24,16 @@ export const ShopLayout: FC<Props> = (props) => {
       </Head>
 
       <nav>
-        <Navbar/>
+        <Navbar />
       </nav>
 
       {/* todo sidebar */}
 
-      <main style={{ margin: '80px auto', maxWidth: '1440px', padding: '0 30px' }}>{children}</main>
+      <main
+        style={{ margin: '80px auto', maxWidth: '1440px', padding: '0 30px' }}
+      >
+        {children}
+      </main>
       <footer>{/* todo custom footer */}</footer>
     </>
   );

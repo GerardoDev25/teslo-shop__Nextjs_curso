@@ -19,6 +19,7 @@ export const ProductSlideshow: FC<Props> = ({ images }) => {
               style={{
                 backgroundImage: `url(${url})`,
                 backgroundSize: 'cover',
+                backgroundRepeat:'no-repeat'
               }}
             ></div>
           </div>

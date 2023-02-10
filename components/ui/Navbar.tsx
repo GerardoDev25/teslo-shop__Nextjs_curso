@@ -35,7 +35,7 @@ export const Navbar = () => {
               <Button>Mujeres</Button>
             </Link>
           </NextLink>
-          <NextLink href='/category/kit' legacyBehavior passHref>
+          <NextLink href='/category/kid' legacyBehavior passHref>
             <Link>
               <Button>Niños</Button>
             </Link>

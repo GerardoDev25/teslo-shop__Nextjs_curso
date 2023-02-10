@@ -22,8 +22,8 @@ export const ProductCart: FC<Props> = ({ product }) => {
 
   const productImage = useMemo(() => {
     return ishovered
-      ? `products/${product.images[1]} `
-      : `products/${product.images[0]} `;
+      ? `/products/${product.images[1]} `
+      : `/products/${product.images[0]} `;
   }, [ishovered, product.images]);
 
   return (

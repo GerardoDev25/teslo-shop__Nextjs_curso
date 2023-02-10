@@ -1,23 +1,17 @@
-import { NextPage } from 'next';
+import { NextPage, GetServerSideProps } from 'next';
 import { Box, Button, Chip, Grid, Typography } from '@mui/material';
 
 import { ShopLayout } from '@/components/layout';
 import { ProductSlideshow, SizeSelector } from '@/components/products';
 import { ItemCounter } from '@/components/ui';
-import { useRouter } from 'next/router';
-import { useProducts } from '@/hooks';
+import { IProduct } from '@/interfaces';
+import { dbProducts } from '@/database';
 
-const ProducPage: NextPage = () => {
-  // const router = useRouter();
+interface Props {
+  product: IProduct;
+}
 
-  // const { products: product, isLoading } = useProducts(
-  //   `/products/${router.query.slug}`
-  // );
-
-  // if (isLoading) {
-  //   return <h1>Loading</h1>;
-  // }
-
+const ProducPage: NextPage<Props> = ({ product }) => {
   return (
     <ShopLayout title={product.title} pageDescription={product.description}>
       <Grid container spacing={3}>
@@ -63,6 +57,25 @@ const ProducPage: NextPage = () => {
       </Grid>
     </ShopLayout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { slug = '' } = ctx.params as { slug: string };
+
+  const product = await dbProducts.getProductBySlug(slug);
+
+  if (!product) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { product },
+  };
 };
 
 export default ProducPage;

@@ -2,13 +2,22 @@ import { NextPage } from 'next';
 import { Box, Button, Chip, Grid, Typography } from '@mui/material';
 
 import { ShopLayout } from '@/components/layout';
-import { initialData } from '@/database/products';
 import { ProductSlideshow, SizeSelector } from '@/components/products';
 import { ItemCounter } from '@/components/ui';
-
-const product = initialData.products[0];
+import { useRouter } from 'next/router';
+import { useProducts } from '@/hooks';
 
 const ProducPage: NextPage = () => {
+  // const router = useRouter();
+
+  // const { products: product, isLoading } = useProducts(
+  //   `/products/${router.query.slug}`
+  // );
+
+  // if (isLoading) {
+  //   return <h1>Loading</h1>;
+  // }
+
   return (
     <ShopLayout title={product.title} pageDescription={product.description}>
       <Grid container spacing={3}>

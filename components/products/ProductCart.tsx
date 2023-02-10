@@ -36,7 +36,7 @@ export const ProductCart: FC<Props> = ({ product }) => {
     >
       <Card>
         <NextLink
-          href={'/product/slug'}
+          href={`/product/${product.slug}`}
           legacyBehavior
           passHref
           prefetch={false}

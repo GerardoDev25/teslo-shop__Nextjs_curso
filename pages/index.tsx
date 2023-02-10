@@ -3,6 +3,7 @@ import { ShopLayout } from '@/components/layout';
 import { ProductList } from '@/components/products';
 import { NextPage } from 'next';
 import { useProducts } from '@/hooks';
+import { FullScreenLoading } from '@/components/ui';
 
 const HomePage: NextPage = () => {
   const { isError, isLoading, products } = useProducts('/products');
@@ -18,7 +19,7 @@ const HomePage: NextPage = () => {
       <Typography variant='h2' sx={{ mb: 1 }}>
         Todos los productos
       </Typography>
-      {isLoading ? <h1>cargandp</h1> : <ProductList products={products} />}
+      {isLoading ? <FullScreenLoading /> : <ProductList products={products} />}
     </ShopLayout>
   );
 };

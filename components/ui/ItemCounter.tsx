@@ -2,11 +2,9 @@ import { AddCircleOutline, RemoveCircleOutline } from '@mui/icons-material';
 import { Box, IconButton, Typography } from '@mui/material';
 import { FC } from 'react';
 
-// type Action = 'plus' | 'less';
-
 interface Props {
   currentValue: number;
-  updateQuantity: (accion: number) => void;
+  updateQuantity: (value: number) => void;
   maxValue: number;
 }
 

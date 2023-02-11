@@ -1,6 +1,9 @@
 import { IProduct } from '@/interfaces';
 import { ProductModel } from '@/models';
 import { db } from '.';
+interface ProductSlug {
+  slug: string;
+}
 
 export const getProductBySlug = async (
   slug: string
@@ -17,9 +20,21 @@ export const getProductBySlug = async (
   return JSON.parse(JSON.stringify(product));
 };
 
-interface ProductSlug {
-  slug: string;
-}
+export const getProductByTerm = async (term: string): Promise<IProduct[]> => {
+  term = term.toString().toLowerCase();
+
+  await db.connect();
+
+  const products = await ProductModel.find({
+    $text: { $search: term },
+  })
+    .select('title images price instock slug -_id')
+    .lean();
+
+  await db.disconnect();
+
+  return products;
+};
 
 export const getAllProductSlug = async (): Promise<ProductSlug[]> => {
   await db.connect();

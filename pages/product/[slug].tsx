@@ -39,12 +39,18 @@ const ProducPage: NextPage<Props> = ({ product }) => {
             </Box>
 
             {/* agregar al carrito */}
-            <Button color='secondary' className='circular-btn'>
-              Agregar al carrito
-            </Button>
 
-            {/* <Chip label='no hay disponible' color='error' variant='outlined' /> */}
-
+            {product.inStock ? (
+              <Button color='secondary' className='circular-btn'>
+                Agregar al carrito
+              </Button>
+            ) : (
+              <Chip
+                label='no hay disponible'
+                color='error'
+                variant='outlined'
+              />
+            )}
             {/* descriccion */}
             <Box sx={{ mt: 3 }}>
               <Typography variant='subtitle2' fontWeight={700}>
@@ -84,7 +90,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: productsSlugs.map(({ slug }) => ({ params: { slug } })),
     fallback: 'blocking',
-
   };
 };
 

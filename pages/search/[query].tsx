@@ -26,7 +26,12 @@ const SearchPage: NextPage<Props> = ({ products, existProducts, query }) => {
         <Typography variant='h2' sx={{ mb: 1 }}>
           {existProducts ? 'Termino:' : 'No se encontraron productos'}
         </Typography>
-        <Typography variant='h2' sx={{ ml: 1 }} color='secondary'>
+        <Typography
+          variant='h2'
+          sx={{ ml: 1 }}
+          color={existProducts ? 'secondary' : 'error'}
+          textTransform={'capitalize'}
+        >
           {query}
         </Typography>
       </Box>

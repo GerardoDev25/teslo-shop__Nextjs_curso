@@ -21,11 +21,18 @@ const ProducPage: NextPage<Props> = ({ product }) => {
     slug: product.slug,
     title: product.title,
     gender: product.gender,
-    quantity: 1,
+    quantity: 3,
   });
 
   const onSelectedSize = (size: ISize) => {
     setTempCartProduct({ ...tempCartProduct, size });
+  };
+
+  const updateQuantity = (action: number) => {
+    setTempCartProduct({
+      ...tempCartProduct,
+      quantity: tempCartProduct.quantity + action,
+    });
   };
 
   return (
@@ -47,7 +54,11 @@ const ProducPage: NextPage<Props> = ({ product }) => {
             {/* cantidad */}
             <Box sx={{ my: 2 }}>
               <Typography variant='subtitle2'>Cantidad</Typography>
-              <ItemCounter />
+              <ItemCounter
+                currentValue={tempCartProduct.quantity}
+                maxValue={20}
+                updateQuantity={updateQuantity}
+              />
               <SizeSelector
                 selectedSize={tempCartProduct.size}
                 sizes={product.sizes}

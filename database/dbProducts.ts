@@ -45,3 +45,15 @@ export const getAllProductSlug = async (): Promise<ProductSlug[]> => {
 
   return slugs;
 };
+
+export const getAllProducts = async (): Promise<IProduct[]> => {
+  await db.connect();
+
+  const slugs = await ProductModel.find()
+    .select('title images price inStock slug -_id')
+    .lean();
+
+  await db.disconnect();
+
+  return slugs;
+};

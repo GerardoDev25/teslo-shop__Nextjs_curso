@@ -19,6 +19,31 @@ export const cartReducer = (
     case '[Cart] - LoadCart from cokies | storage':
       return { ...state };
 
+    case '[Cart] - Add Product':
+      const product = state.cart.find(
+        ({ _id, size }) =>
+          _id == action.payload._id && size === action.payload.size
+      );
+
+      return product
+        ? {
+            ...state,
+            cart: state.cart.map((prod) => {
+              if (
+                prod._id == action.payload._id &&
+                prod.size === action.payload.size
+              ) {
+                return {
+                  ...prod,
+                  quantity: prod.quantity + action.payload.quantity,
+                };
+              }
+
+              return prod;
+            }),
+          }
+        : { ...state, cart: [...state.cart, action.payload] };
+
     default:
       return state;
   }

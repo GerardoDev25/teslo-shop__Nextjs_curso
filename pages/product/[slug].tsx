@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { NextPage, GetStaticPaths, GetStaticProps } from 'next';
+import { useRouter } from 'next/router';
 import { Box, Button, Chip, Grid, Typography } from '@mui/material';
 
 import { ShopLayout } from '@/components/layout';
@@ -7,6 +8,7 @@ import { ProductSlideshow, SizeSelector } from '@/components/products';
 import { ItemCounter } from '@/components/ui';
 import { ICartProduct, IProduct, ISize } from '@/interfaces';
 import { dbProducts } from '@/database';
+import { CartContext } from '@/context';
 
 interface Props {
   product: IProduct;
@@ -24,6 +26,10 @@ const ProducPage: NextPage<Props> = ({ product }) => {
     quantity: 1,
   });
 
+  const { addProductToCart } = useContext(CartContext);
+
+  const router = useRouter();
+
   const onSelectedSize = (size: ISize) => {
     setTempCartProduct({ ...tempCartProduct, size });
   };
@@ -33,6 +39,11 @@ const ProducPage: NextPage<Props> = ({ product }) => {
       ...tempCartProduct,
       quantity: tempCartProduct.quantity + value,
     });
+  };
+
+  const onAddToCart = () => {
+    addProductToCart(tempCartProduct);
+    router.push('/cart');
   };
 
   return (
@@ -55,7 +66,7 @@ const ProducPage: NextPage<Props> = ({ product }) => {
             <Box sx={{ my: 2 }}>
               <Typography variant='subtitle2'>Cantidad</Typography>
               <ItemCounter
-                  currentValue={tempCartProduct.quantity}
+                currentValue={tempCartProduct.quantity}
                 maxValue={product.inStock}
                 updateQuantity={updateQuantity}
               />
@@ -69,7 +80,12 @@ const ProducPage: NextPage<Props> = ({ product }) => {
             {/* agregar al carrito */}
 
             {product.inStock ? (
-              <Button color='secondary' className='circular-btn'>
+              <Button
+                color='secondary'
+                className='circular-btn'
+                disabled={!tempCartProduct.size}
+                onClick={onAddToCart}
+              >
                 {tempCartProduct.size
                   ? 'Agregar al carrito'
                   : 'seleccione una talla'}

@@ -19,13 +19,16 @@ interface Props {
 export const CartProvider: React.FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, CART_INITIAL_STATE);
 
+  // Efecto
   useEffect(() => {
     try {
-      const cartCookies: ICartProduct[] = JSON.parse(Cookie.get('cart')!) || [];
-
+      const cookieProducts = Cookie.get('cart')
+        ? JSON.parse(Cookie.get('cart')!)
+        : [];
+      console.log({ meage: 'load cart', cookieProducts });
       dispatch({
         type: '[Cart] - LoadCart from cokies | storage',
-        payload: cartCookies,
+        payload: cookieProducts,
       });
     } catch (error) {
       dispatch({
@@ -36,7 +39,9 @@ export const CartProvider: React.FC<Props> = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    Cookie.set('cart', JSON.stringify(state.cart));
+    setTimeout(() => {
+      Cookie.set('cart', JSON.stringify(state.cart));
+    }, 0);
   }, [state.cart]);
 
   const addProductToCart = (product: ICartProduct) => {
@@ -76,12 +81,17 @@ export const CartProvider: React.FC<Props> = ({ children }) => {
     dispatch({ type: '[Cart] - Change cart Quantity', payload: product });
   };
 
+  const removeCartProduct = (product: ICartProduct) => {
+    dispatch({ type: '[Cart] - Remove Prduct in Cart', payload: product });
+  };
+
   return (
     <CartContext.Provider
       value={{
         ...state,
         addProductToCart,
         updateCartQuantity,
+        removeCartProduct,
       }}
     >
       {children}

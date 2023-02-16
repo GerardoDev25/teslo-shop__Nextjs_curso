@@ -17,13 +17,10 @@ export const cartReducer = (
 ): CartState => {
   switch (action.type) {
     case '[Cart] - LoadCart from cokies | storage':
-      return { ...state };
+      return { ...state, cart: [...action.payload] };
 
     case '[Cart] - Update products in cart':
-      return {
-        ...state,
-        cart: [...action.payload],
-      };
+      return { ...state, cart: [...action.payload] };
     default:
       return state;
   }

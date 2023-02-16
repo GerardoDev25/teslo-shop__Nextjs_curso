@@ -22,7 +22,7 @@ export const ItemCounter: FC<Props> = ({
         <RemoveCircleOutline />
       </IconButton>
       <Typography sx={{ width: 40, textAlign: 'center' }}>
-        {currentValue}{' '}
+        {currentValue}
       </Typography>
       <IconButton
         onClick={() => updateQuantity(1)}

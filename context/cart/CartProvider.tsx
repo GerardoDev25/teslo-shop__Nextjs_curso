@@ -25,7 +25,6 @@ export const CartProvider: React.FC<Props> = ({ children }) => {
       const cookieProducts = Cookie.get('cart')
         ? JSON.parse(Cookie.get('cart')!)
         : [];
-      console.log({ meage: 'load cart', cookieProducts });
       dispatch({
         type: '[Cart] - LoadCart from cokies | storage',
         payload: cookieProducts,
@@ -42,6 +41,29 @@ export const CartProvider: React.FC<Props> = ({ children }) => {
     setTimeout(() => {
       Cookie.set('cart', JSON.stringify(state.cart));
     }, 0);
+  }, [state.cart]);
+
+  useEffect(() => {
+    const numberOfItem = state.cart.reduce(
+      (prev, curr) => curr.quantity + prev,
+      0
+    );
+
+    const subTotal = state.cart.reduce(
+      (prev, curr) => curr.quantity * curr.price + prev,
+      0
+    );
+
+    const taxRate = Number(process.env.NEXT_PUBLIC_TAX_RATE || 0);
+
+    const orderSummary = {
+      numberOfItem,
+      subTotal,
+      tax: subTotal * taxRate,
+      total: subTotal * taxRate + 1,
+    };
+
+    console.log(orderSummary);
   }, [state.cart]);
 
   const addProductToCart = (product: ICartProduct) => {

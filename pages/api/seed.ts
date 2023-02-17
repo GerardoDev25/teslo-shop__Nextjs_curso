@@ -1,5 +1,5 @@
 import { db, seedDataBase } from '@/database';
-import { ProductModel } from '@/models';
+import { ProductModel, UserModel } from '@/models';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 type Data = {
@@ -15,9 +15,15 @@ export default async function handle(
   }
   try {
     await db.connect();
+
+    await UserModel.deleteMany();
+    await UserModel.insertMany(seedDataBase.initialData.users);
+
     await ProductModel.deleteMany();
     await ProductModel.insertMany(seedDataBase.initialData.products);
+
     await db.disconnect();
+
     return res.status(200).json({ message: 'proceso realisado correctamente' });
   } catch (error: any) {
     console.log(error.message);

@@ -5,6 +5,7 @@ import NextLink from 'next/link';
 import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
 
 import { AuthLayout } from '@/components/layout';
+import { validations } from '@/utils';
 
 type FormData = {
   email: string;
@@ -24,7 +25,7 @@ const LoginPage: NextPage = () => {
 
   return (
     <AuthLayout title='Ingresar'>
-      <form onSubmit={handleSubmit(onLoginUser)}>
+      <form onSubmit={handleSubmit(onLoginUser)} noValidate>
         <Box sx={{ width: 320, padding: '10px 20px' }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -38,7 +39,12 @@ const LoginPage: NextPage = () => {
                 label='Correo'
                 variant='filled'
                 fullWidth
-                {...register('email')}
+                {...register('email', {
+                  required: 'Este campo es requerido',
+                  validate: validations.isEmail,
+                })}
+                error={!!errors.email}
+                helperText={errors.email?.message}
               />
             </Grid>
             <Grid item xs={12}>
@@ -47,7 +53,12 @@ const LoginPage: NextPage = () => {
                 type='password'
                 variant='filled'
                 fullWidth
-                {...register('password')}
+                {...register('password', {
+                  required: 'Este campo es requerido',
+                  minLength: { value: 6, message: 'minimo 6 caracteres' },
+                })}
+                error={!!errors.password}
+                helperText={errors.password?.message}
               />
             </Grid>
             <Grid item xs={12}>

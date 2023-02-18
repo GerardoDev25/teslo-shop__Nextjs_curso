@@ -11,11 +11,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { ErrorOutline } from '@mui/icons-material';
 
 import { AuthLayout } from '@/components/layout';
 import { validations } from '@/utils';
 import { tesloApi } from '@/api';
-import { ErrorOutline } from '@mui/icons-material';
 
 type FormData = {
   email: string;

@@ -1,53 +1,129 @@
-import { AuthLayout } from '@/components/layout';
-import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
+import React, { useState } from 'react';
 import { NextPage } from 'next';
 import NextLink from 'next/link';
-import React from 'react';
+import { useForm } from 'react-hook-form';
+import { ErrorOutline } from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  Chip,
+  Grid,
+  Link,
+  TextField,
+  Typography,
+} from '@mui/material';
+
+import { tesloApi } from '@/api';
+import { AuthLayout } from '@/components/layout';
+import { validations } from '@/utils';
+
+type FormData = {
+  email: string;
+  password: string;
+  name: string;
+};
 
 const RegisterPage: NextPage = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
+  const [showError, setShowError] = useState(false);
+
+  const onRegisterForm = async (dataForm: FormData) => {
+    try {
+      setShowError(false);
+      const { data } = await tesloApi.post('/user/register', dataForm);
+
+      console.log(data);
+    } catch (error) {
+      setShowError(true);
+      console.log('error en las credenciales');
+      setTimeout(() => setShowError(false), 3000);
+    }
+  };
+
   return (
     <AuthLayout title='Registrarse'>
-      <Box sx={{ width: 320, padding: '10px 20px' }}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography variant='h1' component={'h1'}>
-              Crear Cuenta
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <TextField label='Nombre completo' variant='filled' fullWidth />
-          </Grid>
+      <form onSubmit={handleSubmit(onRegisterForm)} noValidate>
+        <Box sx={{ width: 320, padding: '10px 20px' }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant='h1' component={'h1'}>
+                Crear Cuenta
+              </Typography>
+              <Chip
+                label='email,nombre o contrasenña incorrecta'
+                icon={<ErrorOutline />}
+                color={'error'}
+                className='fadeId'
+                sx={{ display: showError ? 'flex' : 'none' }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label='Nombre completo'
+                variant='filled'
+                fullWidth
+                {...register('name', {
+                  required: 'Este campo es requerido',
+                  minLength: { value: 2, message: 'minimo 2 caracteres' },
+                })}
+                error={!!errors.name}
+                helperText={errors.name?.message}
+              />
+            </Grid>
 
-          <Grid item xs={12}>
-            <TextField label='Correo' variant='filled' fullWidth />
-          </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label='Correo'
+                type='email'
+                variant='filled'
+                fullWidth
+                {...register('email', {
+                  required: 'Este campo es requerido',
+                  validate: validations.isEmail,
+                })}
+                error={!!errors.email}
+                helperText={errors.email?.message}
+              />
+            </Grid>
 
-          <Grid item xs={12}>
-            <TextField
-              label='Contarseña'
-              type={'password'}
-              variant='filled'
-              fullWidth
-            />
-          </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label='Contarseña'
+                type={'password'}
+                variant='filled'
+                fullWidth
+                {...register('password', {
+                  required: 'Este campo es requerido',
+                  minLength: { value: 6, message: 'minimo 6 caracteres' },
+                })}
+                error={!!errors.password}
+                helperText={errors.password?.message}
+              />
+            </Grid>
 
-          <Grid item xs={12}>
-            <Button
-              color='secondary'
-              className='circular-btn'
-              size='large'
-              fullWidth
-            >
-              Registrarse
-            </Button>
-            <Grid item xs={12} display='flex' justifyContent='end'>
-              <NextLink href='/auth/login' passHref legacyBehavior>
-                <Link underline='always'>ya tienes una cuenta</Link>
-              </NextLink>
+            <Grid item xs={12}>
+              <Button
+                color='secondary'
+                className='circular-btn'
+                size='large'
+                fullWidth
+                type='submit'
+              >
+                Registrarse
+              </Button>
+              <Grid item xs={12} display='flex' justifyContent='end'>
+                <NextLink href='/auth/login' passHref legacyBehavior>
+                  <Link underline='always'>ya tienes una cuenta</Link>
+                </NextLink>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-      </Box>
+        </Box>
+      </form>
     </AuthLayout>
   );
 };

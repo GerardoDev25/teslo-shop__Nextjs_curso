@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { NextPage } from 'next';
 import NextLink from 'next/link';
 import { useForm } from 'react-hook-form';
@@ -16,6 +16,8 @@ import {
 import { tesloApi } from '@/api';
 import { AuthLayout } from '@/components/layout';
 import { validations } from '@/utils';
+import { AuthContext } from '@/context';
+import { useRouter } from 'next/router';
 
 type FormData = {
   email: string;
@@ -24,24 +26,31 @@ type FormData = {
 };
 
 const RegisterPage: NextPage = () => {
+  const [showError, setShowError] = useState(false);
+  const [errorMesage, setErrorMesage] = useState('');
+  const { registerUser } = useContext(AuthContext);
+  const router = useRouter();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
-  const [showError, setShowError] = useState(false);
 
   const onRegisterForm = async (dataForm: FormData) => {
-    try {
-      setShowError(false);
-      const { data } = await tesloApi.post('/user/register', dataForm);
+    setShowError(false);
 
-      console.log(data);
-    } catch (error) {
+    const { email, name, password } = dataForm;
+
+    const { hasError, message } = await registerUser(name, email, password);
+
+    if (hasError) {
       setShowError(true);
-      console.log('error en las credenciales');
+      setErrorMesage(message!);
       setTimeout(() => setShowError(false), 3000);
+      return;
     }
+
+    router.replace('/');
   };
 
   return (
@@ -54,7 +63,7 @@ const RegisterPage: NextPage = () => {
                 Crear Cuenta
               </Typography>
               <Chip
-                label='email,nombre o contrasenña incorrecta'
+                label={errorMesage}
                 icon={<ErrorOutline />}
                 color={'error'}
                 className='fadeId'

@@ -13,7 +13,6 @@ import {
   Typography,
 } from '@mui/material';
 
-import { tesloApi } from '@/api';
 import { AuthLayout } from '@/components/layout';
 import { validations } from '@/utils';
 import { AuthContext } from '@/context';

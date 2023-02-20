@@ -45,7 +45,8 @@ const LoginPage: NextPage = () => {
       return;
     }
     // todo: navegar a la pantalla anterior
-    router.replace('/');
+    const destination = router.query.p?.toString();
+    router.replace(destination!);
   };
 
   return (

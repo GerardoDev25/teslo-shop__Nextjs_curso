@@ -6,6 +6,7 @@ export interface ContextPropsAuth {
   user?: IUser;
 
   loginUser: (email: string, password: string) => Promise<boolean>;
+  logout: () => void;
   registerUser: (
     name: string,
     email: string,

@@ -23,6 +23,7 @@ interface Props {
 export const AuthProvider: React.FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
   const router = useRouter();
+
   useEffect(() => {
     checkToken();
   }, []);

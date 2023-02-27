@@ -45,7 +45,7 @@ const LoginPage: NextPage = () => {
       return;
     }
     // todo: navegar a la pantalla anterior
-    const destination = router.query.p?.toString();
+    const destination = router.query.p?.toString() || '/';
     router.replace(destination!);
   };
 
@@ -105,7 +105,15 @@ const LoginPage: NextPage = () => {
                 Ingresar
               </Button>
               <Grid item xs={12} display='flex' justifyContent='end'>
-                <NextLink href='/auth/register' passHref legacyBehavior>
+                <NextLink
+                  href={
+                    router.query.p
+                      ? `/auth/register?p=${router.query.p}`
+                      : '/auth/register'
+                  }
+                  passHref
+                  legacyBehavior
+                >
                   <Link underline='always'>Registrarse</Link>
                 </NextLink>
               </Grid>

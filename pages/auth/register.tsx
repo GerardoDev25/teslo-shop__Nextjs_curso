@@ -49,7 +49,9 @@ const RegisterPage: NextPage = () => {
       return;
     }
 
-    router.replace('/');
+    // todo: navegar a la pantalla anterior
+    const destination = router.query.p?.toString() || '/';
+    router.replace(destination!);
   };
 
   return (
@@ -124,7 +126,15 @@ const RegisterPage: NextPage = () => {
                 Registrarse
               </Button>
               <Grid item xs={12} display='flex' justifyContent='end'>
-                <NextLink href='/auth/login' passHref legacyBehavior>
+                <NextLink
+                  href={
+                    router.query.p
+                      ? `/auth/login?p=${router.query.p}`
+                      : '/auth/login'
+                  }
+                  passHref
+                  legacyBehavior
+                >
                   <Link underline='always'>ya tienes una cuenta</Link>
                 </NextLink>
               </Grid>

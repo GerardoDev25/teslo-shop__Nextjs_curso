@@ -1,3 +1,4 @@
+import { useContext, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -10,8 +11,24 @@ import {
 
 import { CartList, OrderSummary } from '@/components/cart';
 import { ShopLayout } from '@/components/layout';
+import { CartContext } from '@/context';
+import { useRouter } from 'next/router';
 
 const CardPage = () => {
+  const { isLoaded, cart } = useContext(CartContext);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoaded && cart.length === 0) {
+      router.replace('/cart/empty');
+    }
+  }, [router, isLoaded, cart]);
+
+  if (!isLoaded || cart.length === 0) {
+    return <></>;
+  }
+
   return (
     <ShopLayout
       title='Carrito - 3'

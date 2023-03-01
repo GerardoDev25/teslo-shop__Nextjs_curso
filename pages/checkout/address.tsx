@@ -11,7 +11,18 @@ import {
 } from '@mui/material';
 
 import { ShopLayout } from '@/components/layout';
-import { jwt } from '@/utils';
+import { countries, jwt } from '@/utils';
+
+type formData = {
+  firstName: string;
+  lastName: string;
+  address: string;
+  address2: string;
+  zip: string;
+  city: string;
+  country: string;
+  phone: string;
+};
 
 const AddressPage: NextPage = () => {
   return (
@@ -46,11 +57,12 @@ const AddressPage: NextPage = () => {
 
         <Grid item xs={12} sm={6}>
           <FormControl fullWidth>
-            <Select variant='filled' label='Pais' value={1}>
-              <MenuItem value={1}>Costa rica</MenuItem>
-              <MenuItem value={2}>Honduras</MenuItem>
-              <MenuItem value={3}>Mexico</MenuItem>
-              <MenuItem value={4}>El Salvador</MenuItem>
+            <Select variant='filled' label='Pais' value={countries[0].code}>
+              {countries.map((country) => (
+                <MenuItem value={country.code} key={country.code}>
+                  {country.name}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Grid>

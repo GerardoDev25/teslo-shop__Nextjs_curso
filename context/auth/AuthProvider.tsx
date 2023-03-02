@@ -99,6 +99,16 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   const logout = () => {
     Cookies.remove('token');
     Cookies.remove('cart');
+    Cookies.remove('address');
+    Cookies.remove('address2');
+    Cookies.remove('city');
+    Cookies.remove('country');
+    Cookies.remove('firstName');
+    Cookies.remove('lastName');
+    Cookies.remove('phone');
+    Cookies.remove('zip');
+
+    router.push('/');
     router.reload();
   };
 

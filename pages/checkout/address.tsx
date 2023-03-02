@@ -26,6 +26,19 @@ type formData = {
   zip: string;
 };
 
+const getAddressFromCookies = (): formData => {
+  return {
+    address: Cookies.get('address') || '',
+    address2: Cookies.get('address2') || '',
+    city: Cookies.get('city') || '',
+    country: Cookies.get('country') || countries[0].code,
+    firstName: Cookies.get('firstName') || '',
+    lastName: Cookies.get('lastName') || '',
+    phone: Cookies.get('phone') || '',
+    zip: Cookies.get('zip') || '',
+  };
+};
+
 const AddressPage: NextPage = () => {
   const router = useRouter();
 
@@ -34,16 +47,7 @@ const AddressPage: NextPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<formData>({
-    defaultValues: {
-      address: '',
-      address2: '',
-      city: '',
-      country: countries[0].code,
-      firstName: '',
-      lastName: '',
-      phone: '',
-      zip: '',
-    },
+    defaultValues: getAddressFromCookies(),
   });
 
   const onSubmitAddress = (data: formData) => {

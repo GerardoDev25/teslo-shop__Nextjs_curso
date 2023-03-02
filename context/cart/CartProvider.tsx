@@ -150,13 +150,28 @@ export const CartProvider: React.FC<Props> = ({ children }) => {
     dispatch({ type: '[Cart] - Remove Prduct in Cart', payload: product });
   };
 
+  const updateAdress = (address: ShippingAddress) => {
+    Cookie.set('address', address.address);
+    Cookie.set('address2', address.address2 || '');
+    Cookie.set('city', address.city);
+    Cookie.set('country', address.country);
+    Cookie.set('firstName', address.firstName);
+    Cookie.set('lastName', address.lastName);
+    Cookie.set('phone', address.phone);
+    Cookie.set('zip', address.zip);
+
+    dispatch({ type: '[Cart] - Update Address', payload: address });
+  };
+
   return (
     <CartContext.Provider
       value={{
         ...state,
+        
         addProductToCart,
         updateCartQuantity,
         removeCartProduct,
+        updateAdress
       }}
     >
       {children}

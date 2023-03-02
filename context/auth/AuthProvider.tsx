@@ -1,9 +1,11 @@
+import { useEffect, useReducer } from 'react';
+import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
+import axios from 'axios';
+
+import Cookies from 'js-cookie';
 import { tesloApi } from '@/api';
 import { IUser } from '@/interfaces';
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import { useRouter } from 'next/router';
-import { useEffect, useReducer } from 'react';
 import { AuthContext, authReducer } from './';
 
 export interface AuthState {
@@ -23,10 +25,18 @@ interface Props {
 export const AuthProvider: React.FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
   const router = useRouter();
+  const { data, status } = useSession();
 
   useEffect(() => {
-    checkToken();
-  }, []);
+    if (status === 'authenticated') {
+      console.log(data.user);
+      // dispatch({ type: '[Auth] - Login', payload: data.user as IUser });
+    }
+  }, [data?.user, status]);
+
+  // useEffect(() => {
+  //   checkToken();
+  // }, []);
 
   const checkToken = async () => {
     if (!Cookies.get('token')) return;

@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from 'react';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import axios from 'axios';
 
 import Cookies from 'js-cookie';
@@ -30,7 +30,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   useEffect(() => {
     if (status === 'authenticated') {
       console.log(data.user);
-      // dispatch({ type: '[Auth] - Login', payload: data.user as IUser });
+      dispatch({ type: '[Auth] - Login', payload: data.user as IUser });
     }
   }, [data?.user, status]);
 
@@ -107,7 +107,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   };
 
   const logout = () => {
-    Cookies.remove('token');
     Cookies.remove('cart');
     Cookies.remove('address');
     Cookies.remove('address2');
@@ -118,8 +117,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     Cookies.remove('phone');
     Cookies.remove('zip');
 
-    router.push('/');
-    router.reload();
+    signOut();
+    // router.push('/');
+    // Cookies.remove('token');
+    // router.reload();
   };
 
   return (

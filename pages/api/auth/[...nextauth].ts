@@ -1,6 +1,7 @@
 import NextAuth, { AuthOptions } from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 import Credentials from 'next-auth/providers/credentials';
+import { dbUsers } from '@/database';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -20,10 +21,14 @@ export const authOptions: AuthOptions = {
       },
 
       async authorize(credentials, req) {
-        console.log({ authorize: { credentials } });
+        // console.log({ authorize: { credentials } });
 
         // todo verificar contra db
-        return { ...credentials, role: 'admin', id: '123' };
+        // return { ...credentials, role: 'admin', id: '123' };
+        return await dbUsers.checkUserEmailAndPassword(
+          credentials?.email,
+          credentials?.password
+        );
       },
     }),
 
@@ -57,10 +62,14 @@ export const authOptions: AuthOptions = {
     },
 
     async session({ session, token, user }) {
-      session.accessToken = token.accessToken;
-      session.user = token.user as any;
+      // session.accessToken = token.accessToken;
+      // session.user = token.user as any;
 
-      return session;
+      return {
+        ...session,
+        accessToken: token.accessToken,
+        user: token.user as any,
+      };
     },
   },
 };

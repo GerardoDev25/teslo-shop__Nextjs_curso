@@ -7,30 +7,62 @@ export const authOptions: AuthOptions = {
     Credentials({
       name: 'custom login',
       credentials: {
-        email: { label: 'Correo', type: 'email', placeholder: 'tu correo' },
+        email: {
+          label: 'Correo',
+          type: 'email',
+          placeholder: 'tu correo',
+        },
         password: {
           label: 'Contraseña',
           type: 'password',
           placeholder: 'tu Contraseña',
         },
       },
-      async authorize(credentials) {
-        console.log(credentials);
 
-        // return null;
+      async authorize(credentials, req) {
+        console.log({ authorize: { credentials } });
+
         // todo verificar contra db
         return { ...credentials, role: 'admin', id: '123' };
       },
     }),
+
     GithubProvider({
       clientId: process.env.GITHUB_ID || '',
       clientSecret: process.env.GITHUB_SECRET || '',
     }),
   ],
 
-  jwt: {},
   // callbacks
-  callbacks: {},
+  callbacks: {
+    async jwt({ token, account, user }) {
+      if (account) {
+        token.accessToken = account.access_token;
+        switch (account.type) {
+          case 'oauth':
+            // todo verificar si existe en la db
+
+            break;
+          case 'credentials':
+            token.user = user;
+
+            break;
+
+          default:
+            break;
+        }
+      }
+
+      return token;
+    },
+
+    async session({ session, token, user }) {
+      session.accessToken = token.accessToken;
+      session.user = token.user as any;
+
+      return session;
+    },
+  },
 };
 
 export default NextAuth(authOptions);

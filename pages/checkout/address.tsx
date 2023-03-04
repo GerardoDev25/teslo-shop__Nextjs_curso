@@ -40,7 +40,7 @@ const getInitialCountry = () => {
     (c) => c?.code === cookieCountry
   );
 
-  console.log({ cookieCountry, country });
+  // console.log({ cookieCountry, country });
 
   return country ? country.name : countries[0].name;
 };

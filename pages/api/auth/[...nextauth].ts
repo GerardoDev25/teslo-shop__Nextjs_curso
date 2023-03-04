@@ -39,6 +39,12 @@ export const authOptions: AuthOptions = {
     newUser: '/auth/register',
   },
 
+  session: {
+    maxAge: 2_592_000,
+    strategy: 'jwt',
+    updateAge: 86_400,
+  },
+
   // callbacks
   callbacks: {
     async jwt({ token, account, user }) {

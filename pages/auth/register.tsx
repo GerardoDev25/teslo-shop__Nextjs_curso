@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
-import { NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 import NextLink from 'next/link';
+import { getSession, signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { ErrorOutline } from '@mui/icons-material';
 import {
@@ -50,8 +51,9 @@ const RegisterPage: NextPage = () => {
     }
 
     // todo: navegar a la pantalla anterior
-    const destination = router.query.p?.toString() || '/';
-    router.replace(destination!);
+    // const destination = router.query.p?.toString() || '/';
+    // router.replace(destination!);
+    await signIn('credentials', { email, password });
   };
 
   return (
@@ -144,6 +146,28 @@ const RegisterPage: NextPage = () => {
       </form>
     </AuthLayout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  query,
+}) => {
+  const session = await getSession({ req });
+
+  const { p = '/' } = query;
+
+  if (session) {
+    return {
+      redirect: {
+        destination: p.toString(),
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 };
 
 export default RegisterPage;

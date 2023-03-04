@@ -1,20 +1,22 @@
-import { verify } from 'jsonwebtoken';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
-export async function middleware(request: NextRequest) {
-  const address = '/checkout/address';
-  const summary = '/checkout/summary';
+export async function middleware(req: NextRequest) {
+  const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-  const token = request.cookies.get('token')?.value || '';
-
-  if (
-    request.nextUrl.pathname.startsWith(address) ||
-    request.nextUrl.pathname.startsWith(summary)
-  ) {
-    return token
-      ? NextResponse.next()
-      : NextResponse.rewrite(
-          new URL(`/auth/login?p=${request.nextUrl.pathname}`, request.url)
-        );
+  if (!session) {
+    const requestedPage = req.nextUrl.pathname;
+    const url = req.nextUrl.clone();
+    url.pathname = `/auth/login`;
+    url.search = `p=${requestedPage}`;
+    return NextResponse.redirect(url);
   }
+
+  return NextResponse.next();
 }
+
+// See "Matching Paths" below to learn more
+export const config = {
+  matcher: ['/checkout/address', '/checkout/summary'],
+};

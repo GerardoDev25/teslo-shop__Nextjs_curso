@@ -28,6 +28,23 @@ type formData = {
   zip: string;
 };
 
+const getInitialCountry = () => {
+  type CountryT = {
+    name: string;
+    code: string;
+  };
+
+  const cookieCountry = Cookies.get('country');
+
+  const country: CountryT | undefined = countries.find(
+    (c) => c?.code === cookieCountry
+  );
+
+  console.log({ cookieCountry, country });
+
+  return country ? country.name : countries[0].name;
+};
+
 const getAddressFromCookies = (): formData => {
   return {
     address: Cookies.get('address') || '',
@@ -146,7 +163,8 @@ const AddressPage: NextPage = () => {
                 select
                 variant='filled'
                 label='Pais'
-                defaultValue={Cookies.get('country') || countries[0].name}
+                // defaultValue={Cookies.get('country') || countries[0].name}
+                defaultValue={getInitialCountry()}
                 {...register('country', {
                   required: 'Este campo es requerido',
                 })}

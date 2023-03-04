@@ -1,6 +1,8 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { NextPage } from 'next';
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
 import {
   Box,
   Button,
@@ -19,6 +21,11 @@ import { countries } from '@/utils';
 
 const SummaryPage: NextPage = () => {
   const { shippingAddress, numberOfItem } = useContext(CartContext);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!Cookies.get('firstName')) router.push('/checkout/address');
+  }, [router]);
 
   if (!shippingAddress) return <></>;
 
@@ -74,7 +81,8 @@ const SummaryPage: NextPage = () => {
                 {city} {zip}
               </Typography>
               <Typography>
-                {countries.find((item) => item.code === country)?.name}
+                {/* {countries.find((item) => item.code === country)?.name} */}
+                {country}
               </Typography>
               <Typography> {phone}</Typography>
 

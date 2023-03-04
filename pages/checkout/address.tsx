@@ -14,7 +14,7 @@ import {
 import { ShopLayout } from '@/components/layout';
 import { countries, jwt } from '@/utils';
 import Cookies from 'js-cookie';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { CartContext } from '@/context';
 
 type formData = {
@@ -63,12 +63,26 @@ const AddressPage: NextPage = () => {
   const { updateAdress } = useContext(CartContext);
 
   const {
+    reset,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<formData>({
-    defaultValues: getAddressFromCookies(),
+    defaultValues: {
+      address: '',
+      address2: '',
+      city: '',
+      country: '',
+      firstName: '',
+      lastName: '',
+      phone: '',
+      zip: '',
+    },
   });
+
+  useEffect(() => {
+    reset(getAddressFromCookies());
+  }, [reset]);
 
   const onSubmitAddress = (data: formData) => {
     updateAdress(data);
@@ -158,25 +172,26 @@ const AddressPage: NextPage = () => {
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <TextField
-                select
-                variant='filled'
-                label='Pais'
-                // defaultValue={Cookies.get('country') || countries[0].name}
-                defaultValue={getInitialCountry()}
-                {...register('country', {
-                  required: 'Este campo es requerido',
-                })}
-                error={!!errors.country}
-              >
-                {countries.map((country) => (
+            {/* <FormControl fullWidth> */}
+            <TextField
+              // select
+              variant='filled'
+              label='Pais'
+              // defaultValue={Cookies.get('country') || countries[0].name}
+              fullWidth
+              {...register('country', {
+                required: 'Este campo es requerido',
+              })}
+              error={!!errors.country}
+              helperText={errors.country?.message}
+            >
+              {/* {countries.map((country) => (
                   <MenuItem value={country.code} key={country.code}>
                     {country.name}
                   </MenuItem>
-                ))}
-              </TextField>
-            </FormControl>
+                ))} */}
+            </TextField>
+            {/* </FormControl> */}
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField

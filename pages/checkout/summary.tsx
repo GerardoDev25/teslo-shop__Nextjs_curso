@@ -16,11 +16,13 @@ import {
 
 import { CartList, OrderSummary } from '@/components/cart';
 import { ShopLayout } from '@/components/layout';
-import { CartContext, ShippingAddress } from '@/context';
-import { countries } from '@/utils';
+import { CartContext } from '@/context';
+// import { countries } from '@/utils';
+import { ShippingAddress } from '@/interfaces';
 
 const SummaryPage: NextPage = () => {
-  const { shippingAddress, numberOfItem } = useContext(CartContext);
+  const { shippingAddress, numberOfItem, createOrder } =
+    useContext(CartContext);
   const router = useRouter();
 
   useEffect(() => {
@@ -39,6 +41,10 @@ const SummaryPage: NextPage = () => {
     zip,
     address2,
   }: ShippingAddress = shippingAddress!;
+
+  const onCreateOrder = () => {
+    createOrder();
+  };
 
   return (
     <ShopLayout title='Resumen de compra' pageDescription='resumen de la orden'>
@@ -97,7 +103,12 @@ const SummaryPage: NextPage = () => {
               <OrderSummary />
 
               <Box sx={{ mt: 3 }}>
-                <Button color='secondary' className='circular-btn' fullWidth>
+                <Button
+                  color='secondary'
+                  className='circular-btn'
+                  fullWidth
+                  onClick={onCreateOrder}
+                >
                   Confirmar Orden
                 </Button>
               </Box>

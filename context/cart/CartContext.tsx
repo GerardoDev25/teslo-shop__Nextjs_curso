@@ -1,6 +1,5 @@
 import { createContext } from 'react';
-import { ICartProduct } from '@/interfaces';
-import { ShippingAddress } from './CartProvider';
+import { ICartProduct, ShippingAddress } from '@/interfaces';
 
 export interface ContextPropsCart {
   isLoaded: boolean;
@@ -15,7 +14,8 @@ export interface ContextPropsCart {
   addProductToCart: (product: ICartProduct) => void;
   updateCartQuantity: (product: ICartProduct) => void;
   removeCartProduct: (product: ICartProduct) => void;
-  updateAdress: (address: ShippingAddress) => void
+  updateAdress: (address: ShippingAddress) => void;
+  createOrder: () => Promise<void>;
 }
 
 export const CartContext = createContext({} as ContextPropsCart);

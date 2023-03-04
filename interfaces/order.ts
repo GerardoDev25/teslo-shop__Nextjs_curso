@@ -29,6 +29,7 @@ export interface ShippingAddress {
 
 export interface IOrderItems {
   _id: string;
+  title:string,
   size: string;
   quantity: number;
   slug: string;

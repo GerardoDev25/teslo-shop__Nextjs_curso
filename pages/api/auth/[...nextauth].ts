@@ -21,10 +21,6 @@ export const authOptions: AuthOptions = {
       },
 
       async authorize(credentials, req) {
-        // console.log({ authorize: { credentials } });
-
-        // todo verificar contra db
-        // return { ...credentials, role: 'admin', id: '123' };
         return await dbUsers.checkUserEmailAndPassword(
           credentials?.email,
           credentials?.password
@@ -45,12 +41,14 @@ export const authOptions: AuthOptions = {
         token.accessToken = account.access_token;
         switch (account.type) {
           case 'oauth':
-            // todo verificar si existe en la db
-
+            token.user = await dbUsers.oAuthToDbUser(
+              user?.email || '',
+              user?.name || ''
+            );
             break;
+
           case 'credentials':
             token.user = user;
-
             break;
 
           default:

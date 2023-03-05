@@ -1,8 +1,11 @@
+import { IOrder } from '@/interfaces';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-type Data = {
-  message: string;
-};
+type Data =
+  | {
+      message: string;
+    }
+  | IOrder;
 
 export default function handle(
   req: NextApiRequest,
@@ -13,10 +16,11 @@ export default function handle(
       return createOrder(req, res);
 
     default:
-      res.status(400).json({ message: 'Bad Request' });
-      break;
+      return res.status(400).json({ message: 'Bad Request' });
   }
 }
 const createOrder = (req: NextApiRequest, res: NextApiResponse<Data>) => {
-  res.status(201).json({ message: 'done' });
+  const body = req.body as IOrder;
+
+  res.status(201).json(body);
 };

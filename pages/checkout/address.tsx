@@ -1,15 +1,7 @@
-import { GetServerSideProps, NextPage } from 'next';
+import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  MenuItem,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 
 import { ShopLayout } from '@/components/layout';
 import { countries, jwt } from '@/utils';
@@ -221,30 +213,31 @@ const AddressPage: NextPage = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const { token = '' } = req.cookies;
+// export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+//   const { token = '' } = req.cookies;
 
-  let isValidToken = false;
+//   let isValidToken = false;
 
-  try {
-    await jwt.isValidToken(token);
-    isValidToken = true;
-  } catch (error) {
-    isValidToken = false;
-  }
+//   try {
+//     await jwt.isValidToken(token);
+//     isValidToken = true;
+//   } catch (error) {
+//     isValidToken = false;
+//   }
 
-  if (!isValidToken) {
-    return {
-      redirect: {
-        destination: '/auth/login?p=/checkout/address',
-        permanent: false,
-      },
-    };
-  }
+//   if (!isValidToken) {
+//     console.log();
+//     return {
+//       redirect: {
+//         destination: '/auth/login?p=/checkout/address',
+//         permanent: false,
+//       },
+//     };
+//   }
 
-  return {
-    props: {},
-  };
-};
+//   return {
+//     props: {},
+//   };
+// };
 
 export default AddressPage;

@@ -29,7 +29,7 @@ const SummaryPage: NextPage = () => {
     if (!Cookies.get('firstName')) router.push('/checkout/address');
   }, [router]);
 
-  if (!shippingAddress) return <></>;
+  if (!shippingAddress) return <>ddd</>;
 
   const {
     address,

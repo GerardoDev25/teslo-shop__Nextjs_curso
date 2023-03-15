@@ -41,7 +41,6 @@ const LoginPage: NextPage = () => {
 
   useEffect(() => {
     getProviders().then((prov) => {
-      // console.log(prov);
       setProviders(prov);
     });
   }, []);

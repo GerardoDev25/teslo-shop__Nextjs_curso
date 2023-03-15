@@ -52,7 +52,7 @@ const OrderPage: NextPage<Props> = ({ order }) => {
           icon={<CreditCardOffOutlined />}
         />
       )}
-      <Grid container>
+      <Grid container className='fadeIn'>
         <Grid item xs={12} sm={7}>
           <CartList products={orderItems} />
         </Grid>

@@ -10,13 +10,8 @@ interface Props {
 }
 
 export const OrderSummary: FC<Props> = ({ order }) => {
-
-  console.log(order);
-  
   const orderFromContext = useContext(CartContext);
-
   const orderToShow = order || orderFromContext;
-
   const { numberOfItem, subTotal, total, tax } = orderToShow;
 
   return (

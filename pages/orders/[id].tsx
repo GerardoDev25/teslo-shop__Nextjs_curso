@@ -1,5 +1,4 @@
 import { NextPage, GetServerSideProps } from 'next';
-import NextLink from 'next/link';
 import {
   Box,
   Card,
@@ -7,7 +6,6 @@ import {
   Chip,
   Divider,
   Grid,
-  Link,
   Typography,
 } from '@mui/material';
 import {
@@ -27,18 +25,7 @@ interface Props {
 }
 
 const OrderPage: NextPage<Props> = ({ order }) => {
-  const {
-    _id,
-    isPaid,
-    numberOfItem,
-    orderItems,
-    shippingAddress,
-    subTotal,
-    tax,
-    total,
-    paidAt,
-    user,
-  } = order;
+  const { _id, isPaid, orderItems, shippingAddress } = order;
 
   return (
     <ShopLayout
@@ -103,23 +90,20 @@ const OrderPage: NextPage<Props> = ({ order }) => {
 
               <Divider sx={{ my: 1 }} />
 
-              {/* <Box display={'flex'} justifyContent='end'>
-                <NextLink legacyBehavior href={'/cart'} passHref>
-                  <Link underline='always'>Editar</Link>
-                </NextLink>
-              </Box> */}
-
               <OrderSummary order={order} />
 
-              <Box sx={{ mt: 3 }}>
-                <h1>Pagar</h1>
-                <Chip
-                  sx={{ my: 2 }}
-                  label='orden ya fue Pagado'
-                  variant='outlined'
-                  color='success'
-                  icon={<CreditScoreOutlined />}
-                />
+              <Box sx={{ mt: 3 }} display='flex' flexDirection={'column'}>
+                {isPaid ? (
+                  <Chip
+                    sx={{ my: 2 }}
+                    label='orden ya fue Pagado'
+                    variant='outlined'
+                    color='success'
+                    icon={<CreditScoreOutlined />}
+                  />
+                ) : (
+                  <h1>Pagar</h1>
+                )}
               </Box>
             </CardContent>
           </Card>

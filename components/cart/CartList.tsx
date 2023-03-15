@@ -12,18 +12,21 @@ import NextLink from 'next/link';
 import { ItemCounter } from '../ui';
 import { FC, useContext } from 'react';
 import { CartContext } from '@/context';
-import { ICartProduct } from '@/interfaces';
+import { ICartProduct, IOrderItems } from '@/interfaces';
 
 interface Props {
   editable?: boolean;
+  products?: IOrderItems[];
 }
 
-export const CartList: FC<Props> = ({ editable = false }) => {
+export const CartList: FC<Props> = ({ editable = false, products }) => {
   const {
     cart = [],
     updateCartQuantity,
     removeCartProduct,
   } = useContext(CartContext);
+
+  const productsToShow = products || cart;
 
   const onCartQuantityValue = (product: ICartProduct, value: number) => {
     product.quantity += value;
@@ -32,7 +35,7 @@ export const CartList: FC<Props> = ({ editable = false }) => {
 
   return (
     <>
-      {cart.map((product) => (
+      {productsToShow.map((product) => (
         <Grid
           key={product.slug + product.size}
           spacing={2}
@@ -63,14 +66,14 @@ export const CartList: FC<Props> = ({ editable = false }) => {
                 <ItemCounter
                   currentValue={product.quantity}
                   updateQuantity={(value) =>
-                    onCartQuantityValue(product, value)
+                    onCartQuantityValue(product as ICartProduct, value)
                   }
                   maxValue={10}
                 />
               ) : (
                 <Typography variant='h5'>
                   {product.quantity}
-                  {product.quantity > 1 ? 'productos' : 'producto'}
+                  {product.quantity > 1 ? ' productos' : ' producto'}
                 </Typography>
               )}
             </Box>
@@ -87,7 +90,7 @@ export const CartList: FC<Props> = ({ editable = false }) => {
               <Button
                 variant='text'
                 color='secondary'
-                onClick={() => removeCartProduct(product)}
+                onClick={() => removeCartProduct(product as ICartProduct)}
               >
                 Remover
               </Button>

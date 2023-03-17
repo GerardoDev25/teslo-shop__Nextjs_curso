@@ -26,7 +26,7 @@ const orderSchema = new Schema(
       zip: { type: String, required: true },
     },
 
-    paymentResult: { type: String, required: true },
+    // paymentResult: { type: String, required: true },
 
     numberOfItem: { type: Number, required: true },
     subTotal: { type: Number, required: true },
@@ -34,7 +34,9 @@ const orderSchema = new Schema(
     total: { type: Number, required: true },
 
     isPaid: { type: Boolean, required: true, default: false },
-    paidAt: { type: String, required: true },
+    paidAt: { type: String },
+
+    transactionId: { type: String },
   },
   { timestamps: true }
 );

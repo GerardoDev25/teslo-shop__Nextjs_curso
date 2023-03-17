@@ -15,6 +15,8 @@ export interface IOrder {
 
   isPaid: boolean;
   paidAt?: string;
+
+  transactionId?: string;
 }
 
 export interface ShippingAddress {
@@ -36,5 +38,5 @@ export interface IOrderItems {
   quantity: number;
   size: ISize;
   slug: string;
-  title:string,
+  title: string;
 }

@@ -10,8 +10,6 @@ import { AuthProvider, CartProvider, UIProvider } from '@/context';
 import '@/styles/globals.css';
 
 export default function App({ Component, pageProps }: AppProps) {
-  console.log({ clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID });
-
   return (
     <SessionProvider>
       <PayPalScriptProvider

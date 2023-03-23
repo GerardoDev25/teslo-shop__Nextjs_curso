@@ -20,13 +20,44 @@ import { IOrder } from '@/interfaces';
 
 import { CartList, OrderSummary } from '@/components/cart';
 import { ShopLayout } from '@/components/layout';
+import { tesloApi } from '@/api';
+import { useRouter } from 'next/router';
+
+export type OrderResponseBody = {
+  id: string;
+  status:
+    | 'COMPLETED'
+    | 'SAVED'
+    | 'APPROVED'
+    | 'VOIDED'
+    | 'PAYER_ACTION_REQUIRED';
+};
 
 interface Props {
   order: IOrder;
 }
 
 const OrderPage: NextPage<Props> = ({ order }) => {
+  const router = useRouter();
   const { _id, isPaid, orderItems, shippingAddress } = order;
+
+  const onOrderCompleted = async (details: OrderResponseBody) => {
+    if (details.status !== 'COMPLETED') {
+      return alert('no hay pago en payapal');
+    }
+
+    try {
+      const { data } = await tesloApi.post(`/orders/pay`, {
+        transactionId: details.id,
+        orderId: order._id,
+      });
+
+      router.reload();
+    } catch (error) {
+      console.log(error);
+      alert('Error');
+    }
+  };
 
   return (
     <ShopLayout
@@ -117,9 +148,11 @@ const OrderPage: NextPage<Props> = ({ order }) => {
                     }}
                     onApprove={(data, actions) => {
                       return actions.order!.capture().then((details) => {
-                        console.log(details);
-                        const name = details?.payer?.name?.given_name;
-                        alert(`Transaction completed by ${name}`);
+                        onOrderCompleted(details);
+
+                        // console.log(details);
+                        // const name = details?.payer?.name?.given_name;
+                        // alert(`Transaction completed by ${name}`);
                       });
                     }}
                   />

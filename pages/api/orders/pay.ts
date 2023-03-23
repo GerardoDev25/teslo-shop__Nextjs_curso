@@ -1,3 +1,6 @@
+import { db } from '@/database';
+import { IPaypal } from '@/interfaces';
+import { OrderModel } from '@/models';
 import axios from 'axios';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -12,7 +15,6 @@ export default function handle(
   switch (req.method) {
     case 'POST':
       return payOrder(req, res);
-      break;
 
     default:
       return res.status(400).json({ message: 'bad request' });
@@ -52,11 +54,50 @@ const getPaypalBeaterToken = async (): Promise<string | null> => {
 };
 
 const payOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+  // todo validar session del usuario
+  // todo validar mongo id
+
   const paypalBeaterToken = await getPaypalBeaterToken();
 
   if (!paypalBeaterToken) {
     return res.status(400).json({ message: 'no se pudo confirmar el token' });
   }
 
-  return res.status(200).json({ message: paypalBeaterToken });
+  const { transactionId = '', orderId = '' } = req.body;
+
+  const { data } = await axios.get<IPaypal.PaypalOrderStatusResponse>(
+    `${process.env.PAYPAL_ORDERS_URL}/${transactionId}`,
+    {
+      headers: {
+        'Authorization': `Bearer ${paypalBeaterToken}`,
+      },
+    }
+  );
+
+  if (data.status !== 'COMPLETED') {
+    return res.status(401).json({ message: 'Ordern no reconocida' });
+  }
+
+  await db.connect();
+
+  const dbOrder = await OrderModel.findById(orderId);
+  if (!dbOrder) {
+    await db.disconnect();
+    return res.status(401).json({ message: 'Ordern no existe un la db' });
+  }
+
+  if (dbOrder.total !== Number(data.purchase_units[0].amount.value)) {
+    await db.disconnect();
+    return res
+      .status(401)
+      .json({ message: 'los montos de paypal y la ordern no coinciden' });
+  }
+
+  dbOrder.transactionId = transactionId;
+  dbOrder.isPaid = true;
+  await dbOrder.save();
+
+  await db.disconnect();
+
+  return res.status(200).json({ message: 'Ordern pagada' });
 };

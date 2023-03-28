@@ -34,7 +34,7 @@ export default async function handle(
     case 'GET':
       return getUsers(req, res);
 
-    case 'POST':
+    case 'PUT':
       return updateUsers(req, res);
 
     default:

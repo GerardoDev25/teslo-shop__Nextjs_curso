@@ -1,21 +1,39 @@
 import { db } from '@/database';
 import { OrderModel, ProductModel, UserModel } from '@/models';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { getSession } from 'next-auth/react';
 
-type Data = {
-  numberOfOrders: number;
-  paidOrders: number;
-  notPaidOrders: number;
-  numberOfClients: number;
-  numberOfProducts: number;
-  productswithNoInventory: number;
-  lowInventory: number;
-};
+type Data =
+  | {
+      numberOfOrders: number;
+      paidOrders: number;
+      notPaidOrders: number;
+      numberOfClients: number;
+      numberOfProducts: number;
+      productswithNoInventory: number;
+      lowInventory: number;
+    }
+  | { message: string };
 
 export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
+  const session: any = await getSession({ req });
+
+  if (!session)
+    return res
+      .status(401)
+      .json({ message: 'Debe de estar autorizado para acceder a este recurso' });
+
+  const validRoles = ['admin', 'super-user'];
+
+  if (!validRoles.includes(session.user.role)) {
+    return res
+      .status(401)
+      .json({ message: 'Debe de estar autorizado para acceder a este recurso' });
+  }
+
   await db.connect();
 
   // const numberOfOrders = await OrderModel.count();

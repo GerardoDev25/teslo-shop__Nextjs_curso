@@ -1,9 +1,9 @@
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { isValidObjectId } from 'mongoose';
+import { getSession } from 'next-auth/react';
 import { db } from '@/database';
 import { IUser } from '@/interfaces';
 import { UserModel } from '@/models';
-import { isValidObjectId } from 'mongoose';
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/react';
 
 type Data =
   | {

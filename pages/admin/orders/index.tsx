@@ -34,7 +34,7 @@ const colums: GridColDef[] = [
     headerName: 'Ver orden',
     renderCell: ({ row }: any) => {
       return (
-        <a href={`/admin/orders/${row.id}`} target='_blank' rel='noreferrer'>
+        <a href={`/admin/orders/${row.id}`} target='_blank' rel="noreferrer">
           Ver Orden
         </a>
       );

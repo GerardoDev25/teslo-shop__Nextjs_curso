@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { GetServerSideProps } from 'next';
-import { AdminLayout } from '@/components/layout';
-import { IProduct } from '@/interfaces';
+import { useForm } from 'react-hook-form';
 import {
   DriveFileRenameOutline,
   SaveOutlined,
@@ -28,15 +27,44 @@ import {
   TextField,
 } from '@mui/material';
 
+import { AdminLayout } from '@/components/layout';
+import { IProduct } from '@/interfaces';
+
 const validTypes = ['shirts', 'pants', 'hoodies', 'hats'];
 const validGender = ['men', 'women', 'kid', 'unisex'];
 const validSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+
+interface FormData {
+  _id?: string;
+  description: string;
+  images: string[];
+  inStock: number;
+  price: number;
+  sizes: string[];
+  slug: string;
+  tags: string[];
+  title: string;
+  type: string;
+  gender: string;
+}
 
 interface Props {
   product: IProduct;
 }
 
 const ProductAdminPage: FC<Props> = ({ product }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    defaultValues: product,
+  });
+
+  const onSubmitForm = (formData: FormData) => {
+    console.log(formData);
+  };
+
   const onDeleteTag = (tag: string) => {};
 
   return (
@@ -45,7 +73,7 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
       suTitle={`Editando: ${product.title}`}
       icon={<DriveFileRenameOutline />}
     >
-      <form>
+      <form onSubmit={handleSubmit(onSubmitForm)}>
         <Box display='flex' justifyContent='end' sx={{ mb: 1 }}>
           <Button
             color='secondary'
@@ -65,12 +93,12 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
               variant='filled'
               fullWidth
               sx={{ mb: 1 }}
-              // { ...register('name', {
-              //     required: 'Este campo es requerido',
-              //     minLength: { value: 2, message: 'Mínimo 2 caracteres' }
-              // })}
-              // error={ !!errors.name }
-              // helperText={ errors.name?.message }
+              {...register('title', {
+                required: 'Este campo es requerido',
+                minLength: { value: 2, message: 'Mínimo 2 caracteres' },
+              })}
+              error={!!errors.title}
+              helperText={errors.title?.message}
             />
 
             <TextField
@@ -79,6 +107,12 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
               fullWidth
               multiline
               sx={{ mb: 1 }}
+              {...register('description', {
+                required: 'Este campo es requerido',
+                minLength: { value: 2, message: 'Mínimo 2 caracteres' },
+              })}
+              error={!!errors.description}
+              helperText={errors.description?.message}
             />
 
             <TextField
@@ -87,6 +121,12 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
               variant='filled'
               fullWidth
               sx={{ mb: 1 }}
+              {...register('inStock', {
+                required: 'Este campo es requerido',
+                min: { value: 0, message: 'Minimo valor cero' },
+              })}
+              error={!!errors.inStock}
+              helperText={errors.inStock?.message}
             />
 
             <TextField
@@ -95,6 +135,12 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
               variant='filled'
               fullWidth
               sx={{ mb: 1 }}
+              {...register('price', {
+                required: 'Este campo es requerido',
+                min: { value: 0, message: 'Minimo valor cero' },
+              })}
+              error={!!errors.price}
+              helperText={errors.price?.message}
             />
 
             <Divider sx={{ my: 1 }} />
@@ -154,6 +200,16 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
               variant='filled'
               fullWidth
               sx={{ mb: 1 }}
+              {...register('slug', {
+                required: 'Este campo es requerido',
+                validate: (val: string) => {
+                  return val.trim().includes(' ')
+                    ? 'No puede tener espacios en blanco'
+                    : undefined;
+                },
+              })}
+              error={!!errors.slug}
+              helperText={errors.slug?.message}
             />
 
             <TextField

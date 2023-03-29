@@ -18,7 +18,7 @@ export interface IOrder {
 
   transactionId?: string;
 
-  createAt: string;
+  createAt?: string;
 }
 
 export interface ShippingAddress {

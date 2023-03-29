@@ -1,7 +1,8 @@
 import React from 'react';
+import NextLink from 'next/link';
 import useSWR from 'swr';
 import { CategoryOutlined } from '@mui/icons-material';
-import { CardMedia, Grid } from '@mui/material';
+import { CardMedia, Grid, Link } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 import { AdminLayout } from '@/components/layout';
@@ -24,7 +25,18 @@ const colums: GridColDef[] = [
       );
     },
   },
-  { field: 'title', headerName: 'Titulo', width: 300 },
+  {
+    field: 'title',
+    headerName: 'Titulo',
+    width: 300,
+    renderCell: ({ row }: any) => {
+      return (
+        <NextLink href={`/admin/products/${row.slug}`} legacyBehavior passHref>
+          <Link underline='always'>{row.title}</Link>
+        </NextLink>
+      );
+    },
+  },
   { field: 'gender', headerName: 'Genero' },
   { field: 'type', headerName: 'Tipo' },
   { field: 'inStock', headerName: 'Inventario' },

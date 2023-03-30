@@ -3,6 +3,7 @@ import { FC, ReactNode } from 'react';
 
 import { SideMenu } from '../ui';
 import { AdminNavbar } from '../admin';
+import Head from 'next/head';
 
 interface Props {
   title: string;
@@ -16,6 +17,12 @@ export const AdminLayout: FC<Props> = (props) => {
 
   return (
     <>
+      <Head>
+        <title>{title}</title>
+        <meta name='description' content={suTitle} />
+        <meta name='og:title' content={title} />
+        <meta name='og:description' content={suTitle} />
+      </Head>
       <nav>
         <AdminNavbar />
       </nav>

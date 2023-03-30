@@ -39,7 +39,7 @@ export default async function handle(
       return updateProduct(req, res);
 
     case 'POST':
-      return res.status(400).json({ message: 'Bad request' });
+      return createProduct(req, res);
 
     default:
       return res.status(400).json({ message: 'Bad request' });
@@ -66,7 +66,7 @@ const updateProduct = async (
     return res.status(400).json({ message: 'El id del producto no es valido' });
   }
 
-  if (!images.length) {
+  if (images.length < 2) {
     return res
       .status(400)
       .json({ message: 'es necesario almenos dos imagenes' });
@@ -87,6 +87,44 @@ const updateProduct = async (
     // todo eliminar fotos en cloudinary
 
     await product.update(req.body);
+
+    await db.disconnect();
+    return res.status(200).json(product);
+  } catch (error) {
+    console.log(error);
+    await db.disconnect();
+    return res
+      .status(400)
+      .json({ message: 'no se pudo realizar la operacion' });
+  }
+};
+
+const createProduct = async (
+  req: NextApiRequest,
+  res: NextApiResponse<Data>
+) => {
+  const { images = [] } = req.body as IProduct;
+
+  if (images.length < 2) {
+    return res
+      .status(400)
+      .json({ message: 'es necesario almenos dos imagenes' });
+  }
+  // todo eliminar fotos en cloudinary
+
+  try {
+    await db.connect();
+
+    const productInDb = await ProductModel.findOne({ slug: req.body.slug });
+
+    if (productInDb) {
+      return res
+        .status(400)
+        .json({ message: 'ya existe un producto con ese slug' });
+    }
+
+    const product = new ProductModel(req.body);
+    await product.save();
 
     await db.disconnect();
     return res.status(200).json(product);

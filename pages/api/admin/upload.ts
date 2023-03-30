@@ -1,8 +1,7 @@
+import fs from 'fs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 import formidable from 'formidable';
-import { db } from '@/database';
-import fs from 'fs';
 
 type Data = {
   message: string;
@@ -54,7 +53,6 @@ const parseFile = async (req: NextApiRequest) => {
   return new Promise((resolve, reject) => {
     const form = new formidable.IncomingForm();
     form.parse(req, async (err, fiels, files) => {
-      console.log(err, fiels, files);
       if (err) {
         return reject(err);
       }

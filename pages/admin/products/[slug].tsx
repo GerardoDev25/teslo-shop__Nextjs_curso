@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { useForm } from 'react-hook-form';
 import {
@@ -53,6 +53,7 @@ interface Props {
 }
 
 const ProductAdminPage: FC<Props> = ({ product }) => {
+  const [newTagValue, setNewTagValue] = useState('');
   const {
     register,
     handleSubmit,
@@ -73,7 +74,7 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
             .replaceAll(' ', '_')
             .replaceAll("'", '')
             .toLowerCase() || '';
-        setValue('slug', newSlug, { shouldValidate: true });
+        setValue('slug', newSlug);
       }
     });
 
@@ -97,7 +98,25 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
     setValue('sizes', [...currentSizes, size], { shouldValidate: true });
   };
 
-  const onDeleteTag = (tag: string) => {};
+  const onNewTag = (tag: string) => {
+    if (!tag.includes(' ')) {
+      setNewTagValue(tag);
+      return;
+    }
+
+    const tags = getValues('tags');
+    const newTag = tag.trim().toLowerCase();
+
+    setNewTagValue('');
+    if (tags.includes(newTag)) return;
+
+    setValue('tags', [...tags, newTag]);
+  };
+
+  const onDeleteTag = (tag: string) => {
+    const updateTags = getValues('tags').filter((t) => t !== tag);
+    setValue('tags', updateTags, { shouldValidate: true });
+  };
 
   return (
     <AdminLayout
@@ -257,6 +276,8 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
               variant='filled'
               fullWidth
               sx={{ mb: 1 }}
+              value={newTagValue}
+              onChange={({ target }) => onNewTag(target.value)}
               helperText='Presiona [spacebar] para agregar'
             />
 
@@ -270,7 +291,7 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
               }}
               component='ul'
             >
-              {product.tags.map((tag) => {
+              {getValues('tags').map((tag) => {
                 return (
                   <Chip
                     key={tag}

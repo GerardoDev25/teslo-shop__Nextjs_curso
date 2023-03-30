@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { useForm } from 'react-hook-form';
 import {
@@ -59,9 +59,26 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
     formState: { errors },
     getValues,
     setValue,
+    watch,
   } = useForm<FormData>({
     defaultValues: product,
   });
+
+  useEffect(() => {
+    const subscription = watch((value, { name, type }) => {
+      if (name === 'title') {
+        const newSlug =
+          value.title
+            ?.trim()
+            .replaceAll(' ', '_')
+            .replaceAll("'", '')
+            .toLowerCase() || '';
+        setValue('slug', newSlug, { shouldValidate: true });
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch, setValue]);
 
   const onSubmitForm = (formData: FormData) => {
     console.log(formData);

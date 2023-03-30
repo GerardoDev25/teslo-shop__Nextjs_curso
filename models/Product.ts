@@ -33,7 +33,7 @@ const productSchemal = new Schema(
         values: ['men', 'women', 'kid', 'unisex'],
         message: '{VALUE} no es un genero permitido',
       },
-      default: 'woman',
+      default: 'women',
     },
   },
   { timestamps: true }

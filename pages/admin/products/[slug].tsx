@@ -30,6 +30,8 @@ import {
 import { AdminLayout } from '@/components/layout';
 import { IProduct } from '@/interfaces';
 import { tesloApi } from '@/api';
+import { ProductModel } from '@/models';
+import { useRouter } from 'next/router';
 
 const validTypes = ['shirts', 'pants', 'hoodies', 'hats'];
 const validGender = ['men', 'women', 'kid', 'unisex'];
@@ -56,6 +58,7 @@ interface Props {
 const ProductAdminPage: FC<Props> = ({ product }) => {
   const [newTagValue, setNewTagValue] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -90,13 +93,13 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
     try {
       const { data } = await tesloApi({
         url: '/admin/products',
-        method: 'PUT',
+        method: form._id ? 'PUT' : 'POST',
         data: form,
       });
       console.log({ data });
 
       if (!form._id) {
-        // todo recargar el navegador
+        router.replace(`/admin/products/${form.slug}`);
       } else {
         setIsSaving(false);
       }
@@ -375,7 +378,16 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const { slug = '' } = query;
 
-  const product = await dbProducts.getProductBySlug(slug.toString());
+  let product: IProduct | null;
+
+  if (slug === 'new') {
+    const tempProduct = JSON.parse(JSON.stringify(new ProductModel()));
+    delete tempProduct._id;
+    tempProduct.images = ['img1.jpg', 'img2.jpg'];
+    product = tempProduct;
+  } else {
+    product = await dbProducts.getProductBySlug(slug.toString());
+  }
 
   if (!product) {
     return {

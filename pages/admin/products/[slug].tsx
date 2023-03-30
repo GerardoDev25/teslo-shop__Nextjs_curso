@@ -87,15 +87,22 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
     return () => subscription.unsubscribe();
   }, [watch, setValue]);
 
-  const onFileSelected = ({ target }: ChangeEvent<HTMLInputElement>) => {
+  const onFileSelected = async ({ target }: ChangeEvent<HTMLInputElement>) => {
     if (!target.files || target.files.length === 0) {
       return;
     }
 
     try {
+      // console.log(file);
       for (const file of target.files) {
         const formData = new FormData();
-        console.log(file);
+
+        formData.append('file', file);
+        const { data } = await tesloApi.post<{ message: string }>(
+          '/admin/upload',
+          formData
+        );
+        console.log(data);
       }
     } catch (error) {
       console.log(error);

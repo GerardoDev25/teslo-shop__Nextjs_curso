@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { ChangeEvent, FC, useEffect, useRef, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { useForm } from 'react-hook-form';
 import {
@@ -57,6 +57,7 @@ interface Props {
 
 const ProductAdminPage: FC<Props> = ({ product }) => {
   const [newTagValue, setNewTagValue] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSaving, setIsSaving] = useState(false);
   const router = useRouter();
   const {
@@ -85,6 +86,21 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
 
     return () => subscription.unsubscribe();
   }, [watch, setValue]);
+
+  const onFileSelected = ({ target }: ChangeEvent<HTMLInputElement>) => {
+    if (!target.files || target.files.length === 0) {
+      return;
+    }
+
+    try {
+      for (const file of target.files) {
+        const formData = new FormData();
+        console.log(file);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const onSubmitForm = async (form: FormData) => {
     if (form.images.length < 2) return alert('minimo 2 imagenes');
@@ -338,9 +354,18 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
                 fullWidth
                 startIcon={<UploadOutlined />}
                 sx={{ mb: 3 }}
+                onClick={() => fileInputRef.current?.click()}
               >
                 Cargar imagen
               </Button>
+              <input
+                ref={fileInputRef}
+                type='file'
+                multiple
+                accept='image/png, image/gif, image/jpeg'
+                style={{ display: 'none' }}
+                onChange={onFileSelected}
+              />
 
               <Chip
                 label='Es necesario al 2 imagenes'

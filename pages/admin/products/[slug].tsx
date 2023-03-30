@@ -29,6 +29,7 @@ import {
 
 import { AdminLayout } from '@/components/layout';
 import { IProduct } from '@/interfaces';
+import { tesloApi } from '@/api';
 
 const validTypes = ['shirts', 'pants', 'hoodies', 'hats'];
 const validGender = ['men', 'women', 'kid', 'unisex'];
@@ -54,6 +55,7 @@ interface Props {
 
 const ProductAdminPage: FC<Props> = ({ product }) => {
   const [newTagValue, setNewTagValue] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
   const {
     register,
     handleSubmit,
@@ -81,8 +83,26 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
     return () => subscription.unsubscribe();
   }, [watch, setValue]);
 
-  const onSubmitForm = (formData: FormData) => {
-    console.log(formData);
+  const onSubmitForm = async (form: FormData) => {
+    if (form.images.length < 2) return alert('minimo 2 imagenes');
+    setIsSaving(true);
+
+    try {
+      const { data } = await tesloApi({
+        url: '/admin/products',
+        method: 'PUT',
+        data: form,
+      });
+      console.log({ data });
+
+      if (!form._id) {
+        // todo recargar el navegador
+      } else {
+        setIsSaving(false);
+      }
+    } catch (errors) {}
+    console.log(errors);
+    setIsSaving(false);
   };
 
   const onChangeSize = (size: string) => {
@@ -131,6 +151,7 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
             startIcon={<SaveOutlined />}
             sx={{ width: '150px' }}
             type='submit'
+            disabled={isSaving}
           >
             Guardar
           </Button>

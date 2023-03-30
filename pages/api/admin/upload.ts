@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 import formidable from 'formidable';
 import { db } from '@/database';
+import fs from 'fs';
 
 type Data = {
   message: string;
@@ -40,7 +41,28 @@ export default async function handle(
       return res.status(400).json({ message: 'bad request' });
   }
 }
-const parseFile = async (req: NextApiRequest) => {};
+
+const saveFile = async (file: formidable.File) => {
+  const data = fs.readFileSync(file.filepath);
+
+  fs.writeFileSync(`./public/${file.originalFilename}`, data);
+  fs.unlinkSync(file.filepath);
+  return;
+};
+
+const parseFile = async (req: NextApiRequest) => {
+  return new Promise((resolve, reject) => {
+    const form = new formidable.IncomingForm();
+    form.parse(req, async (err, fiels, files) => {
+      console.log(err, fiels, files);
+      if (err) {
+        return reject(err);
+      }
+      await saveFile(files.file as formidable.File);
+      resolve(true);
+    });
+  });
+};
 
 const uploadFile = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   await parseFile(req);

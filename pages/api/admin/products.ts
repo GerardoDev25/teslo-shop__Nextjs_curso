@@ -1,9 +1,13 @@
-import { db } from '@/database';
-import { IProduct } from '@/interfaces';
-import { ProductModel } from '@/models';
-import { isValidObjectId } from 'mongoose';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { v2 as cloudinary } from 'cloudinary';
+import { isValidObjectId } from 'mongoose';
 import { getSession } from 'next-auth/react';
+
+import { db } from '@/database';
+import { ProductModel } from '@/models';
+import { IProduct } from '@/interfaces';
+
+cloudinary.config(process.env.CLOUDINARY_URL || '');
 
 type Data =
   | {
@@ -85,6 +89,17 @@ const updateProduct = async (
     }
 
     // todo eliminar fotos en cloudinary
+    product.images.forEach(async (image) => {
+      if (!images.includes(image)) {
+        // * borrar de cloudinary
+        const fileExtension = image
+          .substring(image.lastIndexOf('/') + 1)
+          .split('.');
+
+        const [fileId, extencion] = fileExtension;
+        await cloudinary.uploader.destroy(fileId);
+      }
+    });
 
     await product.update(req.body);
 

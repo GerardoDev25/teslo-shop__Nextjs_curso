@@ -103,6 +103,9 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
           formData
         );
         console.log(data);
+        setValue('images', [...getValues('images'), data.message], {
+          shouldValidate: true,
+        });
       }
     } catch (error) {
       console.log(error);
@@ -142,6 +145,14 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
     }
 
     setValue('sizes', [...currentSizes, size], { shouldValidate: true });
+  };
+
+  const onDeleteImage = (img: string) => {
+    setValue(
+      'images',
+      getValues('images').filter((i) => i !== img),
+      { shouldValidate: true }
+    );
   };
 
   const onNewTag = (tag: string) => {
@@ -381,17 +392,21 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
               />
 
               <Grid container spacing={2}>
-                {product.images.map((img) => (
+                {getValues('images').map((img) => (
                   <Grid item xs={4} sm={3} key={img}>
                     <Card>
                       <CardMedia
                         component='img'
                         className='fadeIn'
-                        image={`/products/${img}`}
+                        image={img.includes('https') ? img : `/products/${img}`}
                         alt={img}
                       />
                       <CardActions>
-                        <Button fullWidth color='error'>
+                        <Button
+                          fullWidth
+                          color='error'
+                          onClick={() => onDeleteImage(img)}
+                        >
                           Borrar
                         </Button>
                       </CardActions>

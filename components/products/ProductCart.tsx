@@ -22,9 +22,7 @@ export const ProductCart: FC<Props> = ({ product }) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const productImage = useMemo(() => {
-    return ishovered
-      ? `/products/${product.images[1]} `
-      : `/products/${product.images[0]} `;
+    return ishovered ? product.images[1] : product.images[0];
   }, [ishovered, product.images]);
 
   return (

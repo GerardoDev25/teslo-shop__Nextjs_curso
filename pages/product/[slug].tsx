@@ -111,25 +111,6 @@ const ProducPage: NextPage<Props> = ({ product }) => {
   );
 };
 
-// export const getServerSideProps: GetServerSideProps = async (ctx) => {
-//   const { slug = '' } = ctx.params as { slug: string };
-
-//   const product = await dbProducts.getProductBySlug(slug);
-
-//   if (!product) {
-//     return {
-//       redirect: {
-//         destination: '/',
-//         permanent: false,
-//       },
-//     };
-//   }
-
-//   return {
-//     props: { product },
-//   };
-// };
-
 export const getStaticPaths: GetStaticPaths = async () => {
   const productsSlugs = await dbProducts.getAllProductSlug();
 
